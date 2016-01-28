@@ -10,8 +10,10 @@ cd ../webrender && git pull
 cd ../webrender_traits && git pull
 cd ../gleam && git pull
 cd ../servo-webrender
+git fetch glennw
+git fetch servo
 git checkout resources
 git checkout master
+git pull servo master
 git branch -D webrender
-git fetch glennw
 git checkout -b webrender glennw/webrender
