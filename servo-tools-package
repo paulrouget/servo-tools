@@ -1,6 +1,12 @@
 #!/bin/sh
 
-set -e -x
+set -e
+
+tmp_dir=`mktemp -d`
+mkdir -p $tmp_dir/servo
+
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$scriptdir/servo-tools-dist $@ $tmp_dir/servo
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   os=linux
@@ -14,17 +20,11 @@ if  [[ $1 = "-r" ]]; then
   build=release
 elif [[ $1 = "-d" ]]; then
   build=debug
-else
-  echo "Error: use -r or -d to specifify the build type (release / debug)"
-  exit
 fi
 
-tmp_dir=`mktemp -d`
 branch=`git rev-parse --abbrev-ref HEAD`
 zip_name=servo-$build-$branch-$os-`date +"%Y-%m-%d"`.zip
 
-mkdir -p $tmp_dir/servo
-cp -r target/$build/deps target/$build/servo resources $tmp_dir/servo
 cd $tmp_dir
 zip -q -r $zip_name servo
 cd -

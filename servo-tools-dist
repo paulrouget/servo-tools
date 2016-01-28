@@ -1,16 +1,42 @@
 #!/bin/sh
 
-set -e -x
+set -e
 
 if  [[ $1 = "-r" ]]; then
   build=release
 elif [[ $1 = "-d" ]]; then
   build=debug
 else
-  echo "Error: use -r or -d to specifify the build type (release / debug)"
-  exit
+  echo "Error: use -r or -d to specifify the build type"
+  exit 1
 fi
 
-rm -rf dist-$build
-mkdir dist-$build
-cp -r target/$build/deps target/$build/servo resources dist-$build
+if [[ x$2 == "x" ]]; then
+  echo "Error: no destination directory provided"
+  exit 1
+else
+  dist=$2
+fi
+
+if [ ! -d $dist ]; then
+  echo "Error: destination directory doesn't not exist: $dist"
+  exit 1
+fi
+
+if [ "$(ls -A $dist)" ]; then
+  echo "Error: destination directory is not empty: $dist"
+  exit 1
+fi
+
+if [ ! -f "./components/servo/Cargo.toml" ]; then
+  echo "Error: not in a Servo repository"
+  exit 1
+fi
+
+if [ ! -d ./target/$build ]; then
+  echo "Error: no $build build available"
+  exit 1
+fi
+
+
+cp -R target/$build/deps target/$build/servo resources $dist
