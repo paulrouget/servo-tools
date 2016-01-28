@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e -x
+
+cd ~/git
+cd core-text-rs && git pull
+cd ../core-graphics-rs && git pull
+cd ../core-foundation-rs && git pull
+cd ../webrender && git pull
+cd ../webrender_traits && git pull
+cd ../gleam && git pull
+cd ../servo-webrender
+git checkout resources
+git checkout master
+git branch -D webrender
+git fetch glennw
+git checkout -b webrender glennw/webrender

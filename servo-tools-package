@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -e -x
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  os=linux
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  os=mac
+else
+  os=unknown
+fi
+
+if  [[ $1 = "-r" ]]; then
+  build=release
+elif [[ $1 = "-d" ]]; then
+  build=debug
+else
+  echo "Error: use -r or -d to specifify the build type (release / debug)"
+  exit
+fi
+
+tmp_dir=`mktemp -d`
+branch=`git rev-parse --abbrev-ref HEAD`
+zip_name=servo-$build-$branch-$os-`date +"%Y-%m-%d"`.zip
+
+mkdir -p $tmp_dir/servo
+cp -r target/$build/deps target/$build/servo resources $tmp_dir/servo
+cd $tmp_dir
+zip -q -r $zip_name servo
+cd -
+cp $tmp_dir/$zip_name .
+rm -rf $tmp_dir
