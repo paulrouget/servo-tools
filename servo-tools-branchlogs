@@ -1,7 +1,8 @@
 echo "master (`date +%Y-%m-%d`):"
 echo
-git log --merges --pretty=format:"  %h: %s" master -1
+echo `git log --merges --pretty=format:"  %h: %s" master -1`
 echo
 echo "branch '`git rev-parse --abbrev-ref HEAD`':"
 echo
 git log --merges --pretty=format:"  %h: %s"  master..
+echo
