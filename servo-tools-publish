@@ -1,0 +1,59 @@
+#!/bin/sh
+
+set -e
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  os=linux
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  os=mac
+else
+  os=unknown
+fi
+
+if  [[ $1 = "-r" ]]; then
+  build=release
+elif [[ $1 = "-d" ]]; then
+  build=debug
+else
+  echo "Error: use -r or -d to specifify the build type"
+  exit 1
+fi
+
+if [[ x$2 == "x" ]]; then
+  echo "Error: no server info provided"
+  exit 1
+else
+  server=$2
+fi
+
+
+date=`date +"%Y-%m-%d"`
+branch=`git rev-parse --abbrev-ref HEAD`
+zip=servo-$build-$branch-$os-$date.zip
+
+if [ ! -f $zip ]; then
+  echo "Error: can't find file: $zip"
+  exit 1
+fi
+
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$scriptdir/servo-tools-branchlogs > readme.txt
+
+cat readme.txt
+
+echo "Creating remote directory"
+
+ssh $server << END
+  mkdir -p ~/public_html/graphene/$date
+END
+
+echo "Uploading $zip and readme.txt to $server"
+
+scp $zip readme.txt $server:~/public_html/graphene/$date
+
+echo "Updating \"latest\" directory"
+
+ssh $server << END
+  rm -f ~/public_html/graphene/latest
+  ln -s ~/public_html/graphene/$date ~/public_html/graphene/latest
+END
