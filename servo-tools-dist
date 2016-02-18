@@ -39,4 +39,4 @@ if [ ! -d ./target/$build ]; then
 fi
 
 
-cp -R target/$build/deps target/$build/servo resources $dist
+cp -R target/$build/servo resources $dist
