@@ -28,5 +28,5 @@ zip_name=servo-$build-$branch-$os-`date +"%Y-%m-%d"`.zip
 cd $tmp_dir
 zip -q -r $zip_name servo
 cd -
-cp $tmp_dir/$zip_name .
+mv $tmp_dir/$zip_name .
 rm -rf $tmp_dir

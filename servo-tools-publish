@@ -39,17 +39,16 @@ fi
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 $scriptdir/servo-tools-branchlogs > readme.txt
 
-cat readme.txt
-
 echo "Creating remote directory"
 
 ssh $server << END
   mkdir -p ~/public_html/graphene/$date
 END
 
-echo "Uploading $zip and readme.txt to $server"
+echo "Uploading $zip, sha.txt and readme.txt to $server"
 
-scp $zip readme.txt $server:~/public_html/graphene/$date
+shasum -a 256 $zip > sha.txt
+scp sha.txt readme.txt $zip $server:~/public_html/graphene/$date
 
 echo "Updating \"latest\" directory"
 
