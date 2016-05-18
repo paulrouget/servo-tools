@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -e
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  os=linux
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  os=mac
+else
+  os=unknown
+fi
+
+if  [[ $1 = "-r" ]]; then
+  build=release
+elif [[ $1 = "-d" ]]; then
+  build=debug
+else
+  echo "Error: use -r or -d to specifify the build type"
+  exit 1
+fi
+
+dashed_date=`date +"%Y-%m-%d"`
+dotted_date=`date +"%Y.%m.%d"`
+branch=`git rev-parse --abbrev-ref HEAD`
+zip=servo-$build-$branch-$os-$dashed_date.zip
+sha=`cat sha.txt | sed -e 's/ .*//'`
+
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$scriptdir/servo-tools-branchlogs > readme.txt
+
+in=$scriptdir/servo-binary.rb.in
+cat $in | \
+sed -e "s/DASHED_DATE/$dashed_date/g" | \
+sed -e "s/ZIP_NAME/$zip/g" | \
+sed -e "s/DOTED_DATE/$dotted_date/g" | \
+sed -e "s/SHA/$sha/g" | \
+cat
