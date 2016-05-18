@@ -1,0 +1,13 @@
+#!/bin/sh
+
+./mach build -r
+
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+$scriptdir/servo-tools-package -r
+$scriptdir/servo-tools-publish -r prouget@people.mozilla.com
+$scriptdir/servo-tools-make-brew-formula -r > ~/git/homebrew-servo/Formula/servo-binary.rb
+
+cd ~/git/homebrew-servo/
+git commit -am update
+git push paul master

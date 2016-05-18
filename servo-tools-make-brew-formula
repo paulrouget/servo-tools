@@ -26,7 +26,6 @@ zip=servo-$build-$branch-$os-$dashed_date.zip
 sha=`cat sha.txt | sed -e 's/ .*//'`
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-$scriptdir/servo-tools-branchlogs > readme.txt
 
 in=$scriptdir/servo-binary.rb.in
 cat $in | \
