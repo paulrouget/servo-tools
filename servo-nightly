@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ~/git/homebrew-servo/ && git pull
+cd ~/git/homebrew-servo/ && git pull paul master
 cd -
 
 ./mach build -r
