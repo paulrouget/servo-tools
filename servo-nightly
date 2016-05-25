@@ -1,5 +1,8 @@
 #!/bin/sh
 
+cd ~/git/homebrew-servo/ && git pull
+cd -
+
 ./mach build -r
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
